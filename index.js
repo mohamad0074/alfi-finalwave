@@ -122,7 +122,7 @@ app.post('/chat', async (req, res) => {
             model: determineGeminiModel('pro'),
             contents: payload,
             config: {
-                systemInstruction: "Anda adalah chatter terhandal."
+                systemInstruction: "Anda adalah Digital marketing terhandal."
             }
         });
 
