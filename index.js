@@ -34,6 +34,7 @@ const __dirname = path.dirname(__filename);
 // declare variable default-nya
 const DEFAULT_GEMINI_MODEL = 'gemini-2.5-flash';
 const DEFAULT_PORT = 3000;
+const DEFAULT_SYSTEM_INSTRUCTION = "Anda adalah Digital marketing terhandal.";
 
 // util variable untuk membuat satu object mapper
 const modelMapper = {
@@ -99,7 +100,7 @@ app.post('/chat', async (req, res) => {
         }
 
         // extract messages dari request body
-        const { messages } = req.body;
+        const { messages, model } = req.body;
 
         // cek messages-nya
         if (!messages) {
@@ -119,10 +120,10 @@ app.post('/chat', async (req, res) => {
         );
 
         const aiResponse = await ai.models.generateContent({
-            model: determineGeminiModel('pro'),
+            model: determineGeminiModel(model ?? 'pro'),
             contents: payload,
             config: {
-                systemInstruction: "Anda adalah Digital marketing terhandal."
+                systemInstruction: DEFAULT_SYSTEM_INSTRUCTION
             }
         });
 
@@ -150,6 +151,15 @@ app.post(
             if (!file) {
                 return res.status(400).json({ message: "File 'image' harus di-upload!" });
             }
+
+            // guard clause 3: validasi tipe file
+            const allowedMimeTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/heic', 'image/heif'];
+            if (!allowedMimeTypes.includes(file.mimetype)) {
+                return res.status(400).json({ 
+                    message: "Tipe file tidak valid. Harap unggah file gambar (JPEG, PNG, WEBP, HEIC, HEIF)." 
+                });
+            }
+
 
             const imgBase64 = file.buffer.toString('base64');
 

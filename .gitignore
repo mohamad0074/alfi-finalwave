@@ -1,3 +1,20 @@
+# Dependencies
+/node_modules
+
+# Environment variables
 .env
-node_modules
-uploads/**/*
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Production/build folders
+/build
+/dist
+
+# Logs
+logs
+*.log
+
+# OS-specific
+.DS_Store
