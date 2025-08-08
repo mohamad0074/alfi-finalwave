@@ -95,7 +95,7 @@ app.post('/chat', async (req, res) => {
             //       ^^ --> 404 --> Not Found (nggak ketemu halaman/item-nya)
             //          --> 403 --> Forbidden (akses tidak dibolehkan)
             //          --> 401 --> Unauthorized (belum login)
-            return res.json(400, "Invalid request body!");
+            return res.status(400).json({ message: "Invalid request body!" });
         }
 
         // extract messages dari request body
@@ -104,7 +104,7 @@ app.post('/chat', async (req, res) => {
         // cek messages-nya
         if (!messages) {
             // kirim kalau nggak ada message-nya
-            return res.json(400, "Pesannya masih kosong nih!");
+            return res.status(400).json({ message: "Pesannya masih kosong nih!" });
         }
 
         const payload = messages.map(
@@ -141,16 +141,14 @@ app.post(
 
             // guard clause 1
             if (!prompt) {
-                res.status(400).json({ message: "Belum ada prompt yang diisi!" });
-                return;
+                return res.status(400).json({ message: "Belum ada prompt yang diisi!" });
             }
 
             const file = req.file;
 
             // guard clause
             if (!file) {
-                res.status(400).json({ message: "File 'image' harus di-upload!" });
-                return;
+                return res.status(400).json({ message: "File 'image' harus di-upload!" });
             }
 
             const imgBase64 = file.buffer.toString('base64');
@@ -170,7 +168,10 @@ app.post(
     }
 );
 
-app.listen(DEFAULT_PORT, () => {
-    console.log("Ada server coy!");
-    console.log("Buka di sini: http://localhost:3000");
-});
+if (!process.env.VERCEL) {
+    app.listen(DEFAULT_PORT, () => {
+        console.log(`Server lokal berjalan di http://localhost:${DEFAULT_PORT}`);
+    });
+}
+
+export default app;

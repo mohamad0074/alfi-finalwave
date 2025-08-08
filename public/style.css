@@ -1,3 +1,4 @@
+/* style.css */
 body {
   font-family: Arial, sans-serif;
   background-color: #f0f2f5;
@@ -29,24 +30,50 @@ h1 {
   margin-bottom: 10px;
 }
 
-.message {
+/* Mengatur gaya dasar untuk gelembung pesan */
+.chat-bubble {
+  clear: both; /* Penting untuk mengontrol tata letak float */
   margin: 8px 0;
   padding: 8px 12px;
   border-radius: 20px;
   max-width: 80%;
-  display: inline-block;
+  display: block; /* Menggunakan display:block agar bisa mengontrol float */
+  word-wrap: break-word; /* Memastikan teks panjang tidak merusak tata letak */
 }
 
-.message.user {
+/* Mengatur gaya untuk gelembung pesan pengguna */
+.chat-bubble.user {
   background-color: #d1e7ff;
   float: right;
-  text-align: right;
+  text-align: left; /* Teks rata kiri di dalam gelembung */
 }
 
-.message.bot {
+/* Mengatur gaya untuk gelembung pesan bot */
+.chat-bubble.bot {
   background-color: #dff6dd;
   float: left;
-  text-align: left;
+  text-align: left; /* Teks rata kiri di dalam gelembung */
+}
+
+/* Mengatur tampilan elemen dalam gelembung chat (dari Marked.js) */
+.chat-bubble h1, .chat-bubble h2, .chat-bubble h3, .chat-bubble h4, .chat-bubble h5, .chat-bubble h6 {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+.chat-bubble p {
+  margin: 0;
+  line-height: 1.5;
+}
+
+.chat-bubble ul, .chat-bubble ol {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+  padding-left: 20px;
+}
+
+.chat-bubble strong {
+  font-weight: bold;
 }
 
 form {
