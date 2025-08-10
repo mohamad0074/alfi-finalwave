@@ -44,11 +44,11 @@ form.addEventListener('submit', async function (e) {
 
   // 2. Tampilkan pesan sementara "Thinking..." dan dapatkan referensi ke elemen tersebut
   // Pesan "Thinking..." juga tidak diproses sebagai Markdown
-  const thinkingMessageElement = appendMessage('bot', 'Thinking...');
+  const thinkingMessageElement = appendMessage('bot', 'Alfi...');
 
   try {
     // 3. Kirim pesan pengguna ke API backend
-    const response = await fetch('/chat', {
+    const response = await fetch('/api/chat', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

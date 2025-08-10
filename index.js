@@ -87,51 +87,6 @@ app.post('/generate-text', async (req, res) => {
     }
 });
 
-app.post('/chat', async (req, res) => {
-    try {
-        if (!req.body) {
-            // perlu ada payload yang dikirim
-            // HTTP 400 --> Bad Request
-            //      ^   --> user yang melakukan "kesalahan"
-            //       ^^ --> 404 --> Not Found (nggak ketemu halaman/item-nya)
-            //          --> 403 --> Forbidden (akses tidak dibolehkan)
-            //          --> 401 --> Unauthorized (belum login)
-            return res.status(400).json({ message: "Invalid request body!" });
-        }
-
-        // extract messages dari request body
-        const { messages, model } = req.body;
-
-        // cek messages-nya
-        if (!messages) {
-            // kirim kalau nggak ada message-nya
-            return res.status(400).json({ message: "Pesannya masih kosong nih!" });
-        }
-
-        const payload = messages.map(
-            msg => {
-                return {
-                    role: msg.role,
-                    parts: [
-                        { text: msg.content }
-                    ]
-                }
-            }
-        );
-
-        const aiResponse = await ai.models.generateContent({
-            model: determineGeminiModel(model ?? 'pro'),
-            contents: payload,
-            config: {
-                systemInstruction: DEFAULT_SYSTEM_INSTRUCTION
-            }
-        });
-
-        res.json({ reply: extractGeneratedText(aiResponse) });
-    } catch (e) {
-        res.status(500).json({ message: e.message });
-    }
-})
 
 app.post(
     '/generate-text-from-image',
