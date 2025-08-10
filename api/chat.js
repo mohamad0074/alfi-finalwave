@@ -2,6 +2,7 @@ import { GoogleGenAI } from '@google/genai';
 
 const DEFAULT_GEMINI_MODEL = 'gemini-2.5-flash';
 const DEFAULT_SYSTEM_INSTRUCTION = "Anda adalah Digital marketing terhandal.";
+const GOOGLE_AI_STUDIO_API_KEY='AIzaSyD3uhOKQQ9JFBIxMG5AveEaAY3Bkan9-FQ';
 
 const modelMapper = {
   'flash': 'gemini-2.5-flash',
@@ -44,7 +45,7 @@ export default async function handler(req, res) {
   }));
 
   const ai = new GoogleGenAI({
-    apiKey: process.env.GOOGLE_AI_STUDIO_API_KEY
+    apiKey:GOOGLE_AI_STUDIO_API_KEY
   });
 
   try {

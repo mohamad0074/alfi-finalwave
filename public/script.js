@@ -54,7 +54,8 @@ form.addEventListener('submit', async function (e) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        messages: [{ role: 'user', content: userMessage }],
+    messages: [{ role: 'user', content: userMessage }],
+    model: 'gemini-2.5-flash'
       }),
     });
 
