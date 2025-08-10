@@ -35,7 +35,52 @@ function appendMessage(sender, text, isMarkdown = false) {
   chatBox.scrollTop = chatBox.scrollHeight;
   return msg;
 }
+function appendMessage(sender, text, userPrompt = '') {
+  const wrapper = document.createElement('div')
+  wrapper.className = `w-full flex mb-4 ${sender === 'user' ? 'justify-end' : 'justify-start'}`
 
+  const msg = document.createElement('div')
+  msg.className = `message ${sender} animate-slide-up px-4 py-2 rounded-xl max-w-[75%] prose prose-base`;
+  
+  if (sender === 'bot') {
+      if (typeof text === 'string' && text.trim() !== '') {
+          let friendlyText = text.replace(/\bSAYA\b/gi, 'aku').replace(/\bANDA\b/gi, 'kamu');
+
+          // <<< LOGIKA PINTAR DIMULAI DI SINI >>>
+          // 1. Definisikan kata kunci yang menandakan pertanyaan tentang nama.
+          const greetingKeywords = ['siapa', 'nama', 'name', 'siapakah'];
+          // 2. Cek apakah prompt pengguna mengandung salah satu kata kunci tersebut.
+          const userAskedForName = greetingKeywords.some(keyword => userPrompt.toLowerCase().includes(keyword));
+
+          // 3. HANYA hapus perkenalan JIKA pengguna TIDAK bertanya tentang nama.
+          if (!userAskedForName) {
+              friendlyText = friendlyText.replace(/^Halo.*?Azhardanii.*?[,.]?\s*/i, '');
+          }
+          // <<< LOGIKA PINTAR SELESAI >>>
+
+          if (friendlyText.length > 0) {
+            friendlyText = friendlyText.charAt(0).toUpperCase() + friendlyText.slice(1);
+          }
+          msg.innerHTML = marked.parse(friendlyText);
+      } else {
+          msg.textContent = "Maaf, aku tidak bisa memproses hasil inputanmu itu."
+      }
+  } else {
+      msg.textContent = text
+  }
+
+  wrapper.appendChild(msg)
+  chatBox.appendChild(wrapper)
+  chatBox.scrollTop = chatBox.scrollHeight
+
+  if (sender === 'user') {
+    sendSound.currentTime = 0;
+    sendSound.play();
+  } else {
+      receiveSound.currentTime = 0;
+      receiveSound.play();
+  }
+}
 /**
  * Menambahkan indikator "thinking..."
  */
