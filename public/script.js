@@ -127,7 +127,8 @@ form.addEventListener('submit', async function (e) {
       if (thinkingMessageElement && thinkingMessageElement.parentNode) {
         chatBox.removeChild(thinkingMessageElement);
       }
-      appendMessage('bot', String(data.reply), true); // parse Markdown
+      appendMessage('bot', String(data.reply), true);
+      receiveSound.play() // parse Markdown
     } else {
       if (thinkingMessageElement) {
         thinkingMessageElement.textContent = 'Sorry, no response received.';
