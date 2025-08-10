@@ -86,6 +86,8 @@ function renderSendButtonIcon() {
 
 // Pesan sambutan awal
 appendMessage('bot', 'Halo! Saya Alfi. Bagaimana saya dapat membantu Anda hari ini?', false);
+const sendSound = new Audio('/sounds/send.mp3');
+const receiveSound = new Audio('/sounds/receive.mp3');
 
 // Dengarkan event submission pada form
 form.addEventListener('submit', async function (e) {
@@ -95,6 +97,7 @@ form.addEventListener('submit', async function (e) {
 
   // 1) Tambahkan pesan user
   appendMessage('user', userMessage, false);
+  sendSound.play().catch(console.error); // Mainkan suara kirim
   input.value = '';
 
   // 2) Tampilkan indikator thinking
