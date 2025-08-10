@@ -74,7 +74,18 @@ function appendMessage(sender, text, userPrompt = '') {
   chatBox.scrollTop = chatBox.scrollHeight
 
   if (sender === 'user') {
-    sendSound.currentTime = 0;
+    sendSound.current    // ...existing code...
+    const form = document.getElementById('chat-form');
+    const input = document.getElementById('user-input');
+    const chatBox = document.getElementById('chat-box');
+    
+    // Tambahkan inisialisasi sound di sini
+    const sendSound = new Audio('/sounds/send.mp3');
+    const receiveSound = new Audio('/sounds/receive.mp3');
+    
+    // Ambil marked dari window (pastikan index.html memuat CDN Marked.js)
+    const marked = window.marked;
+    // ...existing code...Time = 0;
     sendSound.play();
   } else {
       receiveSound.currentTime = 0;
