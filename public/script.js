@@ -85,6 +85,32 @@ function appendMessage(sender, text, userPrompt = '') {
     
     // Ambil marked dari window (pastikan index.html memuat CDN Marked.js)
     const marked = window.marked;
+    // ...existing code...    // ...existing code...
+    if (sender === 'bot') {
+        if (typeof text === 'string' && text.trim() !== '') {
+            let friendlyText = text.replace(/\bSAYA\b/gi, 'aku').replace(/\bANDA\b/gi, 'kamu');
+    
+            // <<< LOGIKA PINTAR DIMULAI DI SINI >>>
+            const greetingKeywords = ['siapa', 'nama', 'name', 'siapakah'];
+            // Pastikan userPrompt adalah string
+            const promptStr = typeof userPrompt === 'string' ? userPrompt : '';
+            const userAskedForName = greetingKeywords.some(keyword => promptStr.toLowerCase().includes(keyword));
+            // <<< LOGIKA PINTAR SELESAI >>>
+    
+            if (!userAskedForName) {
+                friendlyText = friendlyText.replace(/^Halo.*?Azhardanii.*?[,.]?\s*/i, '');
+            }
+    
+            if (friendlyText.length > 0) {
+                friendlyText = friendlyText.charAt(0).toUpperCase() + friendlyText.slice(1);
+            }
+            msg.innerHTML = marked.parse(friendlyText);
+        } else {
+            msg.textContent = "Maaf, aku tidak bisa memproses hasil inputanmu itu."
+        }
+    } else {
+        msg.textContent = text
+    }
     // ...existing code...Time = 0;
     sendSound.play();
   } else {
