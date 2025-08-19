@@ -4,32 +4,61 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Alfi AI Chatbot</title>
-    
     <link rel="stylesheet" href="style.css" />
-
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
+    <!-- Mobile-like container with status bar and proper mobile layout -->
+    <div class="mobile-container">
+        <!-- Status bar -->
+        <div class="status-bar">
+            <span class="time">9:41 AM</span>
+            <div class="status-icons">
+                <span class="signal">●●●●</span>
+                <span class="wifi">📶</span>
+                <span class="battery">🔋</span>
+            </div>
+        </div>
 
-    <main class="container">
-        <header>
-            <h1>Alfi AI Chatbot</h1>
+        <!-- Header with hamburger menu and notification -->
+        <header class="mobile-header">
+            <button class="menu-btn">☰</button>
+            <div class="header-title">Alfi AI Chatbot</div>
+            <button class="notification-btn">🔔</button>
         </header>
 
-        <div id="chat-box" class="chat-box" role="log" aria-live="polite">
-            </div>
+        <!-- Chat area -->
+        <div id="chat-box" class="chat-area">
+            <!-- Welcome message will be added by JavaScript -->
+        </div>
 
-        <form id="chat-form">
-            <input 
-                type="text" 
-                id="user-input" 
-                placeholder="Type your message..." 
-                autocomplete="off" 
-                required 
-            />
-            <button type="submit">Send</button>
-        </form>
-    </main>
+        <!-- Input area -->
+        <div class="input-area">
+            <form id="chat-form">
+                <div class="input-container">
+                    <button type="button" class="attachment-btn">📎</button>
+                    <input 
+                        type="text" 
+                        id="user-input" 
+                        placeholder="Type your prompts here" 
+                        autocomplete="off" 
+                    />
+                    <button type="submit" class="send-btn">▶</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Bottom navigation -->
+        <nav class="bottom-nav">
+            <button class="nav-btn">🏠</button>
+            <button class="nav-btn active">💬</button>
+            <button class="nav-btn">⏰</button>
+            <button class="nav-btn">👤</button>
+        </nav>
+
+        <!-- Home indicator -->
+        <div class="home-indicator"></div>
+    </div>
 
     <script src="script.js"></script>
 </body>

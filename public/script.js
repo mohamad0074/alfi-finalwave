@@ -1,147 +1,173 @@
-// script.js - Mendukung Markdown (Marked.js) + ikon pesawat kertas pada tombol kirim
+class MobileChatbot {
+  constructor() {
+    this.chatBox = document.getElementById("chat-box")
+    this.userInput = document.getElementById("user-input")
+    this.chatForm = document.getElementById("chat-form")
 
-// Dapatkan elemen-elemen HTML yang dibutuhkan
-const form = document.getElementById('chat-form');
-const input = document.getElementById('user-input');
-const chatBox = document.getElementById('chat-box');
+    this.init()
+  }
 
-// Ambil marked dari window (pastikan index.html memuat CDN Marked.js)
-const marked = window.marked;
+  init() {
+    // Add welcome message
+    this.addWelcomeMessage()
 
-/**
- * Appends a new message to the chat box.
- * This function now handles Markdown formatting using Marked.js.
- * @param {string} sender - The sender of the message ('user' or 'bot').
- * @param {string} text - The content of the message (can be Markdown).
- * @param {boolean} isMarkdown - Flag to determine if the text should be parsed as Markdown.
- * @returns {HTMLElement} The created message element.
- */
-function appendMessage(sender, text, isMarkdown = false) {
-  const msg = document.createElement('div');
-  msg.classList.add('chat-bubble', sender); // sesuai CSS Anda
+    // Event listeners
+    this.chatForm.addEventListener("submit", (e) => this.handleSubmit(e))
 
-  if (isMarkdown && marked && typeof marked.parse === 'function') {
+    // Auto-focus input
+    this.userInput.focus()
+  }
+
+  addWelcomeMessage() {
+    const welcomeText = "Halo! Saya Alfi. Bagaimana saya dapat membantu Anda hari ini?"
+    this.appendMessage("bot", welcomeText, "Aiva AI")
+  }
+
+  async handleSubmit(e) {
+    e.preventDefault()
+
+    const message = this.userInput.value.trim()
+    if (!message) return
+
+    // Add user message
+    this.appendMessage("user", message, "You")
+    this.userInput.value = ""
+
+    // Play send sound
+    this.playSound("send")
+
+    // Show thinking indicator
+    const thinkingId = this.showThinking()
+
     try {
-      msg.innerHTML = marked.parse(text);
-    } catch {
-      msg.textContent = text;
-    }
-  } else {
-    msg.textContent = text;
-  }
+      // Call API
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ message }),
+      })
 
-  chatBox.appendChild(msg);
-  // Auto scroll ke pesan terbaru
-  chatBox.scrollTop = chatBox.scrollHeight;
-  return msg;
-}
-/**
- * Menambahkan indikator "thinking..."
- */
-function showThinking(text = 'Alfi...') {
-  return appendMessage('bot', text, false);
-}
-
-/**
- * SVG ikon pesawat kertas (inline) agar tanpa dependensi eksternal.
- * Param size untuk ukuran ikon (px).
- */
-function getPaperPlaneSVG(size = 16) {
-  // Bentuk sederhana "paper-plane" (diisi currentColor agar mengikuti warna teks tombol)
-  return `
-    <svg width="${size}" height="${size}" viewBox="0 0 24 24" aria-hidden="true"
-         focusable="false" xmlns="http://www.w3.org/2000/svg"
-         style="display:inline-block;vertical-align:-2px">
-      <path d="M22 3L2 12l9.8 1.6L13 22l9-19z" fill="currentColor"></path>
-      <path d="M22 3L11.8 13.6" stroke="currentColor" stroke-width="1.6"
-            stroke-linecap="round" stroke-linejoin="round"></path>
-    </svg>
-  `;
-}
-
-/**
- * Pasang ikon pesawat kertas ke tombol submit.
- * - Jika layar kecil, tampilkan hanya ikon
- * - Jika layar lebar, ikon + teks (ambil teks eksisting tombol)
- */
-function renderSendButtonIcon() {
-  const btn =
-    form?.querySelector('button[type="submit"]') ||
-    document.querySelector('#chat-form button[type="submit"]');
-  if (!btn) return;
-
-  // Ambil label dari isi tombol saat ini (fallback "Kirim")
-  const currentLabel = (btn.textContent || '').trim() || 'Kirim';
-
-  // Tampilkan hanya ikon di layar kecil, ikon + teks di layar besar
-  const compact = window.matchMedia('(max-width: 640px)').matches;
-  if (compact) {
-    btn.setAttribute('aria-label', currentLabel);
-    btn.innerHTML = getPaperPlaneSVG(18);
-  } else {
-    btn.removeAttribute('aria-label');
-    btn.innerHTML = `${getPaperPlaneSVG(16)} <span style="margin-left:8px">${currentLabel}</span>`;
-  }
-}
-
-// Pesan sambutan awal
-appendMessage('bot', 'Halo! Saya Alfi. Bagaimana saya dapat membantu Anda hari ini?', false);
-const sendSound = new Audio('/sounds/send.mp3');
-const receiveSound = new Audio('/sounds/receive.mp3');
-
-// Dengarkan event submission pada form
-form.addEventListener('submit', async function (e) {
-  e.preventDefault();
-  const userMessage = input.value.trim();
-  if (!userMessage) return;
-
-  // 1) Tambahkan pesan user
-  appendMessage('user', userMessage, false);
-  sendSound.play().catch(console.error); // Mainkan suara kirim
-  input.value = '';
-
-  // 2) Tampilkan indikator thinking
-  const thinkingMessageElement = showThinking('Alfi...');
-
-  try {
-    // 3) Panggil API backend Anda
-    const response = await fetch('/api/chat', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      // Payload tetap seperti yang Anda gunakan
-      body: JSON.stringify({
-        messages: [{ role: 'user', content: userMessage }],
-        model: 'gemini-2.5-flash',
-      }),
-    });
-
-    if (!response.ok) {
-      throw new Error(`Server error: ${response.status}`);
-    }
-
-    // Asumsi server mengembalikan { reply: "markdown or string" }
-    const data = await response.json();
-
-    // 4) Ganti "thinking" dengan jawaban AI
-    if (data && typeof data.reply !== 'undefined') {
-      if (thinkingMessageElement && thinkingMessageElement.parentNode) {
-        chatBox.removeChild(thinkingMessageElement);
+      if (!response.ok) {
+        throw new Error("Failed to get response from server")
       }
-      appendMessage('bot', String(data.reply), true);
-      receiveSound.play() // parse Markdown
-    } else {
-      if (thinkingMessageElement) {
-        thinkingMessageElement.textContent = 'Sorry, no response received.';
-      }
-    }
-  } catch (error) {
-    console.error('Failed to fetch chat response:', error);
-    if (thinkingMessageElement) {
-      thinkingMessageElement.textContent = 'Failed to get response from server.';
+
+      const data = await response.json()
+
+      // Remove thinking indicator
+      this.removeThinking(thinkingId)
+
+      // Add bot response
+      this.appendMessage("bot", data.response, "Aiva AI")
+
+      // Play receive sound
+      this.playSound("receive")
+    } catch (error) {
+      console.error("Error:", error)
+      this.removeThinking(thinkingId)
+      this.appendMessage("bot", "Maaf, terjadi kesalahan. Silakan coba lagi.", "Aiva AI")
     }
   }
-});
 
-// Render ikon saat pertama kali load dan saat resize agar responsif
-window.addEventListener('DOMContentLoaded', renderSendButtonIcon);
-window.addEventListener('resize', renderSendButtonIcon);
+  appendMessage(sender, content, name) {
+    const messageDiv = document.createElement("div")
+    messageDiv.className = `message ${sender}`
+
+    const currentTime = new Date().toLocaleTimeString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    })
+
+    const avatar = sender === "bot" ? "🤖" : "👤"
+
+    messageDiv.innerHTML = `
+            <div class="message-header">
+                <div class="avatar ${sender}">${avatar}</div>
+                <span class="sender-name">${name}</span>
+            </div>
+            <div class="message-bubble">
+                ${this.formatMessage(content)}
+            </div>
+            <div class="message-time">${currentTime}</div>
+            ${sender === "bot" ? this.getActionButtons() : ""}
+        `
+
+    this.chatBox.appendChild(messageDiv)
+    this.scrollToBottom()
+  }
+
+  formatMessage(content) {
+    // Use marked.js for markdown if available
+    const marked = window.marked // Declare the variable before using it
+    if (typeof marked !== "undefined") {
+      return marked.parse(content)
+    }
+    return content.replace(/\n/g, "<br>")
+  }
+
+  getActionButtons() {
+    return `
+            <div class="message-actions">
+                <button class="action-btn" onclick="this.closest('.message').querySelector('.message-bubble').innerHTML">🔊</button>
+                <button class="action-btn" onclick="navigator.clipboard.writeText(this.closest('.message').querySelector('.message-bubble').textContent)">📋</button>
+                <button class="action-btn" onclick="location.reload()">🔄</button>
+            </div>
+        `
+  }
+
+  showThinking() {
+    const thinkingDiv = document.createElement("div")
+    const thinkingId = "thinking-" + Date.now()
+    thinkingDiv.id = thinkingId
+    thinkingDiv.className = "message bot"
+
+    thinkingDiv.innerHTML = `
+            <div class="message-header">
+                <div class="avatar bot">🤖</div>
+                <span class="sender-name">Aiva AI</span>
+            </div>
+            <div class="message-bubble">
+                <div class="thinking">
+                    <span>Thinking</span>
+                    <div class="thinking-dots">
+                        <div class="thinking-dot"></div>
+                        <div class="thinking-dot"></div>
+                        <div class="thinking-dot"></div>
+                    </div>
+                </div>
+            </div>
+        `
+
+    this.chatBox.appendChild(thinkingDiv)
+    this.scrollToBottom()
+    return thinkingId
+  }
+
+  removeThinking(thinkingId) {
+    const thinkingElement = document.getElementById(thinkingId)
+    if (thinkingElement) {
+      thinkingElement.remove()
+    }
+  }
+
+  scrollToBottom() {
+    this.chatBox.scrollTop = this.chatBox.scrollHeight
+  }
+
+  playSound(type) {
+    try {
+      const audio = new Audio(`/public/sounds/${type}.mp3`)
+      audio.volume = 0.3
+      audio.play().catch((e) => console.log("Sound play failed:", e))
+    } catch (error) {
+      console.log("Sound not available:", error)
+    }
+  }
+}
+
+// Initialize chatbot when DOM is loaded
+document.addEventListener("DOMContentLoaded", () => {
+  new MobileChatbot()
+})
