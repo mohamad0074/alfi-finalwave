@@ -1,75 +1,61 @@
-import { GoogleGenAI } from '@google/genai';
+import { GoogleGenerativeAI } from "@google/generative-ai"
 
-// Untuk local development, aktifkan dotenv (tidak masalah di Vercel, akan diabaikan)
-if (!process.env.GOOGLE_AI_STUDIO_API_KEY) {
-  try {
-    require('dotenv').config();
-  } catch (e) {}
-}
-
-const DEFAULT_GEMINI_MODEL = 'gemini-2.5-flash';
-const DEFAULT_SYSTEM_INSTRUCTION = "Anda adalah Digital marketing terhandal.";
-const GOOGLE_AI_STUDIO_API_KEY = process.env.GOOGLE_AI_STUDIO_API_KEY;
+const DEFAULT_GEMINI_MODEL = "gemini-1.5-flash"
+const DEFAULT_SYSTEM_INSTRUCTION = "Anda adalah Alfi, asisten AI yang ramah dan membantu."
 
 const modelMapper = {
-  'flash': 'gemini-2.5-flash',
-  'flash-lite': 'gemini-2.5-flash-lite',
-  'pro': 'gemini-2.5-pro'
-};
+  flash: "gemini-1.5-flash",
+  "flash-lite": "gemini-1.5-flash",
+  pro: "gemini-1.5-pro",
+}
 
-const determineGeminiModel = (key) => modelMapper[key] ?? DEFAULT_GEMINI_MODEL;
+const determineGeminiModel = (key) => modelMapper[key] ?? DEFAULT_GEMINI_MODEL
 
-const extractGeneratedText = (data) => {
+const extractGeneratedText = (result) => {
   try {
-    const text =
-      data?.response?.candidates?.[0]?.content?.parts?.[0]?.text ??
-      data?.candidates?.[0]?.content?.parts?.[0]?.text ??
-      data?.response?.candidates?.[0]?.content?.text;
-    return text ?? JSON.stringify(data, null, 2);
+    return result.response.text() || "Maaf, saya tidak dapat memberikan respons saat ini."
   } catch (err) {
-    return JSON.stringify(data, null, 2);
+    console.error("Error extracting text:", err)
+    return "Maaf, terjadi kesalahan dalam memproses respons."
   }
-};
+}
 
 export default async function handler(req, res) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ message: 'Method not allowed' });
-  }
-
-  if (!GOOGLE_AI_STUDIO_API_KEY) {
-    return res.status(500).json({ message: "API key tidak ditemukan di environment variable." });
+  if (req.method !== "POST") {
+    return res.status(405).json({ message: "Method not allowed" })
   }
 
   if (!req.body) {
-    return res.status(400).json({ message: "Invalid request body!" });
+    return res.status(400).json({ message: "Invalid request body!" })
   }
 
-  const { messages, model } = req.body;
+  const { message, model } = req.body
 
-  if (!messages) {
-    return res.status(400).json({ message: "Pesannya masih kosong nih!" });
+  if (!message) {
+    return res.status(400).json({ message: "Pesannya masih kosong nih!" })
   }
 
-  const payload = messages.map(msg => ({
-    role: msg.role,
-    parts: [{ text: msg.content }]
-  }));
+  const apiKey = process.env.GOOGLE_AI_STUDIO_API_KEY
 
-  const ai = new GoogleGenAI({
-    apiKey: GOOGLE_AI_STUDIO_API_KEY
-  });
+  if (!apiKey) {
+    return res.status(500).json({ message: "API key tidak ditemukan!" })
+  }
+
+  const genAI = new GoogleGenerativeAI(apiKey)
 
   try {
-    const aiResponse = await ai.models.generateContent({
-      model: determineGeminiModel(model ?? 'pro'),
-      contents: payload,
-      config: {
-        systemInstruction: DEFAULT_SYSTEM_INSTRUCTION
-      }
-    });
+    const model_instance = genAI.getGenerativeModel({
+      model: determineGeminiModel(model ?? "flash"),
+      systemInstruction: DEFAULT_SYSTEM_INSTRUCTION,
+    })
 
-    res.json({ reply: extractGeneratedText(aiResponse) });
+    const result = await model_instance.generateContent(message)
+
+    const reply = extractGeneratedText(result)
+
+    res.json({ reply })
   } catch (e) {
-    res.status(500).json({ message: e.message });
+    console.error("API Error:", e)
+    res.status(500).json({ message: `Error: ${e.message}` })
   }
 }
