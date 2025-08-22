@@ -66,7 +66,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // tambah routing untuk handle model-nya
 // app.post('/', (req, res) => {})
 
-app.post('/generate-text', async (req, res) => {
+app.post('/api/chat', async (req, res) => {
     try {
         const prompt = req.body?.prompt;
 
@@ -76,20 +76,37 @@ app.post('/generate-text', async (req, res) => {
             return;
         }
 
+        // Ambil model dari body, atau gunakan default
+        const modelKey = req.body?.model ?? 'pro';
+        const selectedModel = determineGeminiModel(modelKey);
+
+        // Ambil messages dari body
+        const messages = req.body?.messages;
+        if (!messages || !Array.isArray(messages) || messages.length === 0) {
+            return res.status(400).json({ message: "Format 'messages' tidak valid atau kosong." });
+        }
+
+        const payload = messages.map(msg => ({
+            role: msg.role,
+            parts: [{ text: msg.content }]
+        }));
+
         const aiResponse = await ai.models.generateContent({
-            model: DEFAULT_GEMINI_MODEL,
-            contents: prompt
+            model: selectedModel,
+            contents: payload,
+            systemInstruction: { role: "system", parts: [{ text: DEFAULT_SYSTEM_INSTRUCTION }] }
         });
 
-        res.json({ result: extractGeneratedText(aiResponse) });
+        // Menyesuaikan format response agar sama dengan api/chat.js sebelumnya
+        res.json({ reply: extractGeneratedText(aiResponse) });
     } catch (err) {
+        console.error("Error in /api/chat:", err);
         res.status(500).json({ message: err.message });
     }
 });
 
-
 app.post(
-    '/generate-text-from-image',
+    '/api/generate-text-from-image',
     upload.single('image'),
     async (req, res) => {
         try {
@@ -128,6 +145,7 @@ app.post(
 
             res.json({ result: extractGeneratedText(aiResponse) });
         } catch (err) {
+            console.error("Error in /api/generate-text-from-image:", err);
             res.status(500).json({ message: err.message });
         }
     }
