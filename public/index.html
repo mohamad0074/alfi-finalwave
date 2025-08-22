@@ -14,17 +14,31 @@
         <div class="status-bar">
             <span class="time">9:41 AM</span>
             <div class="status-icons">
-                <span class="signal">●●●●</span>
-                <span class="wifi">📶</span>
-                <span class="battery">🔋</span>
+                <div class="signal-bars">
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                </div>
+                <div class="wifi-icon">📶</div>
+                <div class="battery-icon">
+                    <div class="battery-body"></div>
+                    <div class="battery-tip"></div>
+                </div>
             </div>
         </div>
 
         <!-- Header with hamburger menu and notification -->
         <header class="mobile-header">
-            <button class="menu-btn">☰</button>
+            <button class="menu-btn">
+                <div class="hamburger-line"></div>
+                <div class="hamburger-line"></div>
+                <div class="hamburger-line"></div>
+            </button>
             <div class="header-title">Alfi AI Chatbot</div>
-            <button class="notification-btn">🔔</button>
+            <button class="notification-btn">
+                <div class="bell-icon"></div>
+            </button>
         </header>
 
         <!-- Chat area -->
@@ -36,24 +50,36 @@
         <div class="input-area">
             <form id="chat-form">
                 <div class="input-container">
-                    <button type="button" class="attachment-btn">📎</button>
+                    <button type="button" class="attachment-btn">
+                        <div class="clip-icon"></div>
+                    </button>
                     <input 
                         type="text" 
                         id="user-input" 
                         placeholder="Type your prompts here" 
                         autocomplete="off" 
                     />
-                    <button type="submit" class="send-btn">▶</button>
+                    <button type="submit" class="send-btn">
+                        <div class="send-arrow"></div>
+                    </button>
                 </div>
             </form>
         </div>
 
         <!-- Bottom navigation -->
         <nav class="bottom-nav">
-            <button class="nav-btn">🏠</button>
-            <button class="nav-btn active">💬</button>
-            <button class="nav-btn">⏰</button>
-            <button class="nav-btn">👤</button>
+            <button class="nav-btn">
+                <div class="home-icon"></div>
+            </button>
+            <button class="nav-btn active">
+                <div class="chat-icon"></div>
+            </button>
+            <button class="nav-btn">
+                <div class="alarm-icon"></div>
+            </button>
+            <button class="nav-btn">
+                <div class="profile-icon"></div>
+            </button>
         </nav>
 
         <!-- Home indicator -->

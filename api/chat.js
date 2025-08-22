@@ -1,8 +1,15 @@
 import { GoogleGenAI } from '@google/genai';
 
+// Untuk local development, aktifkan dotenv (tidak masalah di Vercel, akan diabaikan)
+if (!process.env.GOOGLE_AI_STUDIO_API_KEY) {
+  try {
+    require('dotenv').config();
+  } catch (e) {}
+}
+
 const DEFAULT_GEMINI_MODEL = 'gemini-2.5-flash';
 const DEFAULT_SYSTEM_INSTRUCTION = "Anda adalah Digital marketing terhandal.";
-const GOOGLE_AI_STUDIO_API_KEY='AIzaSyD3uhOKQQ9JFBIxMG5AveEaAY3Bkan9-FQ';
+const GOOGLE_AI_STUDIO_API_KEY = process.env.GOOGLE_AI_STUDIO_API_KEY;
 
 const modelMapper = {
   'flash': 'gemini-2.5-flash',
@@ -29,6 +36,10 @@ export default async function handler(req, res) {
     return res.status(405).json({ message: 'Method not allowed' });
   }
 
+  if (!GOOGLE_AI_STUDIO_API_KEY) {
+    return res.status(500).json({ message: "API key tidak ditemukan di environment variable." });
+  }
+
   if (!req.body) {
     return res.status(400).json({ message: "Invalid request body!" });
   }
@@ -45,7 +56,7 @@ export default async function handler(req, res) {
   }));
 
   const ai = new GoogleGenAI({
-    apiKey:GOOGLE_AI_STUDIO_API_KEY
+    apiKey: GOOGLE_AI_STUDIO_API_KEY
   });
 
   try {

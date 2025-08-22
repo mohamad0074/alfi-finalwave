@@ -28,7 +28,7 @@ body {
   box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
 }
 
-/* Status bar */
+/* Enhanced status bar with modern icons */
 .status-bar {
   display: flex;
   justify-content: space-between;
@@ -41,11 +41,57 @@ body {
 
 .status-icons {
   display: flex;
-  gap: 5px;
+  gap: 8px;
   align-items: center;
 }
 
-/* Mobile header */
+.signal-bars {
+  display: flex;
+  gap: 2px;
+  align-items: flex-end;
+}
+
+.signal-bars .bar {
+  width: 3px;
+  background: white;
+  border-radius: 1px;
+}
+
+.signal-bars .bar:nth-child(1) {
+  height: 4px;
+}
+.signal-bars .bar:nth-child(2) {
+  height: 6px;
+}
+.signal-bars .bar:nth-child(3) {
+  height: 8px;
+}
+.signal-bars .bar:nth-child(4) {
+  height: 10px;
+}
+
+.battery-icon {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.battery-body {
+  width: 22px;
+  height: 11px;
+  border: 1px solid white;
+  border-radius: 2px;
+  background: white;
+}
+
+.battery-tip {
+  width: 1px;
+  height: 6px;
+  background: white;
+  border-radius: 0 1px 1px 0;
+}
+
+/* Enhanced mobile header with modern icons */
 .mobile-header {
   display: flex;
   justify-content: space-between;
@@ -59,9 +105,39 @@ body {
   background: none;
   border: none;
   color: white;
-  font-size: 18px;
   cursor: pointer;
-  padding: 5px;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hamburger-line {
+  width: 18px;
+  height: 2px;
+  background: white;
+  margin: 2px 0;
+  border-radius: 1px;
+}
+
+.bell-icon {
+  width: 18px;
+  height: 20px;
+  border: 2px solid #ffd700;
+  border-radius: 50% 50% 0 0;
+  position: relative;
+}
+
+.bell-icon::after {
+  content: "";
+  position: absolute;
+  bottom: -3px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 2px;
+  background: #ffd700;
+  border-radius: 0 0 2px 2px;
 }
 
 .header-title {
@@ -107,6 +183,7 @@ body {
   flex-direction: row-reverse;
 }
 
+/* Enhanced avatar styling with modern robot and user icons */
 .avatar {
   width: 40px;
   height: 40px;
@@ -125,6 +202,68 @@ body {
 .avatar.user {
   background: #555;
   color: white;
+}
+
+/* Robot icon styling */
+.robot-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.robot-head {
+  width: 20px;
+  height: 20px;
+  background: white;
+  border-radius: 4px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.robot-eyes {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 2px;
+}
+
+.robot-eye {
+  width: 3px;
+  height: 3px;
+  background: #97a97d;
+  border-radius: 50%;
+}
+
+.robot-mouth {
+  width: 6px;
+  height: 1px;
+  background: #97a97d;
+  border-radius: 1px;
+}
+
+/* User icon styling */
+.user-icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.user-head {
+  width: 12px;
+  height: 12px;
+  background: white;
+  border-radius: 50%;
+  margin-bottom: 2px;
+}
+
+.user-body {
+  width: 16px;
+  height: 8px;
+  background: white;
+  border-radius: 8px 8px 0 0;
 }
 
 .sender-name {
@@ -163,7 +302,7 @@ body {
   text-align: right;
 }
 
-/* Action buttons for bot messages */
+/* Enhanced action buttons with modern icons */
 .message-actions {
   display: flex;
   gap: 15px;
@@ -174,13 +313,75 @@ body {
   background: none;
   border: none;
   color: #888;
-  font-size: 16px;
   cursor: pointer;
   padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .action-btn:hover {
   color: #ccc;
+}
+
+.speaker-icon {
+  width: 14px;
+  height: 10px;
+  border-left: 3px solid currentColor;
+  position: relative;
+}
+
+.speaker-icon::before {
+  content: "";
+  position: absolute;
+  right: -2px;
+  top: -2px;
+  width: 0;
+  height: 0;
+  border-left: 4px solid currentColor;
+  border-top: 7px solid transparent;
+  border-bottom: 7px solid transparent;
+}
+
+.copy-icon {
+  width: 12px;
+  height: 14px;
+  border: 1px solid currentColor;
+  border-radius: 2px;
+  position: relative;
+}
+
+.copy-icon::after {
+  content: "";
+  position: absolute;
+  top: -3px;
+  left: 3px;
+  width: 12px;
+  height: 14px;
+  border: 1px solid currentColor;
+  border-radius: 2px;
+  background: #2a2a2a;
+}
+
+.refresh-icon {
+  width: 14px;
+  height: 14px;
+  border: 2px solid currentColor;
+  border-radius: 50%;
+  border-top-color: transparent;
+  position: relative;
+}
+
+.refresh-icon::after {
+  content: "";
+  position: absolute;
+  top: -1px;
+  right: -1px;
+  width: 0;
+  height: 0;
+  border-left: 3px solid currentColor;
+  border-top: 2px solid transparent;
+  border-bottom: 2px solid transparent;
 }
 
 /* Input area */
@@ -199,13 +400,36 @@ body {
   gap: 10px;
 }
 
+/* Enhanced attachment button with clip icon */
 .attachment-btn {
   background: none;
   border: none;
   color: #888;
-  font-size: 18px;
   cursor: pointer;
   padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.clip-icon {
+  width: 12px;
+  height: 16px;
+  border: 2px solid currentColor;
+  border-radius: 6px 6px 0 0;
+  position: relative;
+  transform: rotate(-45deg);
+}
+
+.clip-icon::after {
+  content: "";
+  position: absolute;
+  top: 4px;
+  left: 2px;
+  width: 4px;
+  height: 8px;
+  border: 1px solid currentColor;
+  border-radius: 2px 2px 0 0;
 }
 
 #user-input {
@@ -222,6 +446,7 @@ body {
   color: #888;
 }
 
+/* Enhanced send button with arrow icon */
 .send-btn {
   background: white;
   border: none;
@@ -233,10 +458,18 @@ body {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  font-size: 14px;
 }
 
-/* Bottom navigation */
+.send-arrow {
+  width: 0;
+  height: 0;
+  border-left: 8px solid #333;
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  margin-left: 2px;
+}
+
+/* Enhanced bottom navigation with modern icons */
 .bottom-nav {
   display: flex;
   justify-content: space-around;
@@ -249,15 +482,126 @@ body {
   background: none;
   border: none;
   color: #666;
-  font-size: 20px;
   cursor: pointer;
   padding: 8px;
   border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
 }
 
 .nav-btn.active {
   background: white;
   color: #333;
+}
+
+/* Navigation icons */
+.home-icon {
+  width: 18px;
+  height: 16px;
+  border: 2px solid currentColor;
+  border-bottom: none;
+  border-radius: 2px 2px 0 0;
+  position: relative;
+}
+
+.home-icon::before {
+  content: "";
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-bottom: 8px solid currentColor;
+}
+
+.home-icon::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 18px;
+  height: 2px;
+  background: currentColor;
+}
+
+.chat-icon {
+  width: 16px;
+  height: 12px;
+  border: 2px solid currentColor;
+  border-radius: 8px;
+  position: relative;
+}
+
+.chat-icon::after {
+  content: "";
+  position: absolute;
+  bottom: -4px;
+  left: 4px;
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 4px solid currentColor;
+}
+
+.alarm-icon {
+  width: 14px;
+  height: 16px;
+  border: 2px solid currentColor;
+  border-radius: 50% 50% 0 0;
+  position: relative;
+}
+
+.alarm-icon::before {
+  content: "";
+  position: absolute;
+  top: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2px;
+  height: 4px;
+  background: currentColor;
+  border-radius: 1px;
+}
+
+.alarm-icon::after {
+  content: "";
+  position: absolute;
+  bottom: -3px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 6px;
+  height: 2px;
+  background: currentColor;
+  border-radius: 1px;
+}
+
+.profile-icon {
+  width: 14px;
+  height: 14px;
+  border: 2px solid currentColor;
+  border-radius: 50%;
+  position: relative;
+}
+
+.profile-icon::after {
+  content: "";
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20px;
+  height: 10px;
+  border: 2px solid currentColor;
+  border-radius: 10px 10px 0 0;
+  border-bottom: none;
 }
 
 /* Home indicator */
